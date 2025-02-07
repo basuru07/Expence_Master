@@ -1,4 +1,6 @@
 import 'package:expence_master/models/expence.dart';
+import 'package:expence_master/widgets/AddNewExpences.dart';
+import 'package:expence_master/widgets/expence_list.dart';
 import 'package:flutter/material.dart';
 
 class Expences extends StatefulWidget {
@@ -28,6 +30,17 @@ class _ExpencesState extends State<Expences> {
         category: Category.travel),
   ];
 
+  // funtion to open a model overlay
+void _openAddExpencesOverlay() {
+  showModalBottomSheet(
+    context: context,
+    builder: (context) {
+      return AddNewExpences();
+    },
+  );
+}
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -45,7 +58,7 @@ class _ExpencesState extends State<Expences> {
               Container(
                 color: Colors.yellow,
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: _openAddExpencesOverlay,
                   icon: const Icon(
                     Icons.add,
                   ),
@@ -55,14 +68,7 @@ class _ExpencesState extends State<Expences> {
           ),
           body: Column(
             children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _expenceList.length,
-                  itemBuilder: (context, index) {
-                    return Text(_expenceList[index].title);
-                  },
-                ),
-              ),
+              ExpenceList(expenceList: _expenceList,),
             ],
           )),
     );
