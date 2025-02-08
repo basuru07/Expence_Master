@@ -20,10 +20,10 @@ class _AddNewExpencesState extends State<AddNewExpences> {
 
   // Date variables
   final DateTime initialDate = DateTime.now();
-  final DateTime firstDate =
-      DateTime(DateTime.now().year - 1, DateTime.now().month, DateTime.now().day);
-  final DateTime lastDate =
-      DateTime(DateTime.now().year + 1, DateTime.now().month, DateTime.now().day);
+  final DateTime firstDate = DateTime(
+      DateTime.now().year - 1, DateTime.now().month, DateTime.now().day);
+  final DateTime lastDate = DateTime(
+      DateTime.now().year + 1, DateTime.now().month, DateTime.now().day);
 
   DateTime _selectedDate = DateTime.now();
 
@@ -42,20 +42,19 @@ class _AddNewExpencesState extends State<AddNewExpences> {
     }
   }
 
-void _saveForm() {
-  if (_formKey.currentState!.validate()) {
-    final newExpense = ExpenceModel(
-      title: _titleController.text,
-      amount: double.parse(_amountController.text),
-      date: _selectedDate,
-      category: _selectedCategory,
-    );
+  void _saveForm() {
+    if (_formKey.currentState!.validate()) {
+      final newExpense = ExpenceModel(
+        title: _titleController.text,
+        amount: double.parse(_amountController.text),
+        date: _selectedDate,
+        category: _selectedCategory,
+      );
 
-    widget.onAddExpense(newExpense); // Pass the expense to the parent
-    Navigator.pop(context); // Close modal
+      widget.onAddExpense(newExpense); // Pass the expense to the parent
+      Navigator.pop(context); // Close modal
+    }
   }
-}
-
 
   @override
   void dispose() {
@@ -157,17 +156,23 @@ void _saveForm() {
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
+                          backgroundColor: const Color(0xFFCA1F3D),
                         ),
-                        child: const Text("Close"),
+                        child: const Text(
+                          "Close",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                       const SizedBox(width: 5),
                       ElevatedButton(
                         onPressed: _saveForm,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: const Color(0xFFFFBA00),
                         ),
-                        child: const Text("Save"),
+                        child: const Text(
+                          "Save",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ],
                   ),

@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
+import 'package:hive/hive.dart';
+
+part 'expence.g.dart';
+
+@HiveType(typeId: 1)
 
 class ExpenceModel{
+  @HiveField(0)
   final String title;
+
+  @HiveField(1)
   final double amount;
+
+  @HiveField(2)
   final DateTime date;
+
+  @HiveField(3)
   final Category category;  // category enum
+
+  @HiveField(4)
   final String id;
 
   // getter > formated data

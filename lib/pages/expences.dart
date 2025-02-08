@@ -1,7 +1,9 @@
 import 'package:expence_master/models/expence.dart';
+import 'package:expence_master/server/database.dart';
 import 'package:expence_master/widgets/AddNewExpences.dart';
 import 'package:expence_master/widgets/expence_list.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class Expences extends StatefulWidget {
@@ -12,24 +14,28 @@ class Expences extends StatefulWidget {
 }
 
 class _ExpencesState extends State<Expences> {
+
+final _myBox = Hive.box("expenceDatabase");
+Database db = Database();
+
   //expence list
-  final List<ExpenceModel> _expenceList = [
-    ExpenceModel(
-        title: "Foot Ball",
-        amount: 12.5,
-        date: DateTime.now(),
-        category: Category.leasure),
-    ExpenceModel(
-        title: "Fried Rice",
-        amount: 10,
-        date: DateTime.now(),
-        category: Category.food),
-    ExpenceModel(
-        title: "Bag",
-        amount: 20,
-        date: DateTime.now(),
-        category: Category.travel),
-  ];
+  // final List<ExpenceModel> _expenceList = [
+  //   ExpenceModel(
+  //       title: "Foot Ball",
+  //       amount: 12.5,
+  //       date: DateTime.now(),
+  //       category: Category.leasure),
+  //   ExpenceModel(
+  //       title: "Fried Rice",
+  //       amount: 10,
+  //       date: DateTime.now(),
+  //       category: Category.food),
+  //   ExpenceModel(
+  //       title: "Bag",
+  //       amount: 20,
+  //       date: DateTime.now(),
+  //       category: Category.travel),
+  // ];
 
   // funtion to open a model overlay
   void _openAddExpencesOverlay() {
@@ -45,7 +51,7 @@ class _ExpencesState extends State<Expences> {
 
   void _addExpense(ExpenceModel newExpense) {
     setState(() {
-      _expenceList.add(newExpense); // Add new expense and update UI
+      db.expenceList.add(newExpense); // Add new expense and update UI
       calCategoryValues();
     });
   }
@@ -55,7 +61,7 @@ class _ExpencesState extends State<Expences> {
     // store deleting expence
     ExpenceModel deletingExpence = expence;
     setState(() {
-      _expenceList.remove(expence);
+      db.expenceList.remove(expence);
       calCategoryValues();
     });
 
@@ -66,7 +72,7 @@ class _ExpencesState extends State<Expences> {
         action: SnackBarAction(
           label: "undo",
           onPressed: () {
-            _expenceList.add(deletingExpence);
+            db.expenceList.add(deletingExpence);
           },
         ),
       ),
@@ -84,7 +90,7 @@ class _ExpencesState extends State<Expences> {
     double leasureValTotal = 0;
     double workValTotal = 0;
 
-    for (final expence in _expenceList) {
+    for (final expence in db.expenceList) {
       if (expence.category == Category.food) {
         foodValTotal += expence.amount;
       }
@@ -114,9 +120,19 @@ class _ExpencesState extends State<Expences> {
     };
   }
 
+  @override
   void initState() {
     super.initState();
-    calCategoryValues();
+    
+    if(_myBox.get("EXP_DATA") == null){
+      db.createInitialDatabase();
+      calCategoryValues();
+    }else{
+      db.loadData();
+      calCategoryValues();
+    }
+
+
   }
 
   // pie chart
@@ -138,11 +154,12 @@ class _ExpencesState extends State<Expences> {
                 color: Colors.white,
               ),
             ),
-            backgroundColor: const Color.fromARGB(255, 77, 4, 195),
+            backgroundColor: const Color(0xFF2E0E12),
+
             elevation: 0,
             actions: [
               Container(
-                color: Colors.yellow,
+                color: Color(0xFFFFBA00),
                 child: IconButton(
                   onPressed: _openAddExpencesOverlay,
                   icon: const Icon(
@@ -156,7 +173,7 @@ class _ExpencesState extends State<Expences> {
             children: [
               PieChart(dataMap: dataMap),
               ExpenceList(
-                expenceList: _expenceList,
+                expenceList: db.expenceList,
                 onDeleteExpence: onDeleteExpence,
               ),
             ],
